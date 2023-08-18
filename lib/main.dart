@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.lime),
         useMaterial3: true,
       ),
-      initialRoute: RouteBinding.home,
+      initialRoute: RouteBinding.guest,
       routes: RouteBinding.routes(),
     );
   }

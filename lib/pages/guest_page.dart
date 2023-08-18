@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:sofia_app/bindings/route.binding.dart';
 
-class HomePage extends StatelessWidget {
-  HomePage({Key? key}) : super(key: key);
+class GuestPage extends StatelessWidget {
+  const GuestPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

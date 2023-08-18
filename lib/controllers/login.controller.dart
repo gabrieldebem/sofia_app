@@ -81,12 +81,12 @@ class LoginController extends GetxController {
     try {
       AuthResponse response = await userService.auth(email, password);
       await _storageService.set('token', response.accessToken!);
-      print(await _storageService.get('token'));
-      Navigator.of(context).pushNamed(RouteBinding.home);
+
+      Navigator.of(context).pushNamed(RouteBinding.guest);
     } catch (e) {
-      print(e);
       _hideSnakBar(scaffold);
       _showFailedLoginSnackBar(scaffold, context, e);
+
       clear();
     } finally {
       _hideSnakBar(scaffold);
