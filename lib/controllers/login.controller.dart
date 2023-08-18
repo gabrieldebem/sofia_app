@@ -1,48 +1,36 @@
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sofia_app/bindings/route.binding.dart';
+import 'package:sofia_app/services/storage.service.dart';
 import 'package:sofia_app/services/users.service.dart';
-import 'package:sofia_app/view_models/user_response.dart';
+import 'package:sofia_app/view_models/auth_response.dart';
 
-class SignupController extends GetxController {
+class LoginController extends GetxController {
   UserService userService = Get.put(UserService());
+  IStorageService _storageService = Get.put(StorageService());
 
   final _formKey = GlobalKey<FormState>();
-  final _name = ''.obs;
   final _email = ''.obs;
   final _password = ''.obs;
 
   GlobalKey<FormState> get formKey => _formKey;
-  String get name => _name.value;
   String get email => _email.value;
   String get password => _password.value;
 
-  set name(String value) => _name(value);
   set email(String value) => _email(value);
   set password(String value) => _password(value);
 
-  TextEditingController nameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
-  void onNameChanged(String value) {
-    name = value;
-  }
+  void onEmailChanged(String value) => email = value;
 
-  void onEmailChanged(String value) {
-    email = value;
-  }
-
-  void onPasswordChanged(String value) {
-    password = value;
-  }
+  void onPasswordChanged(String value) => password = value;
 
   @override
   void onInit() {
     clear();
 
-    nameController.addListener(() => name = nameController.text);
     emailController.addListener(() => email = emailController.text);
     passwordController.addListener(() => password = passwordController.text);
 
@@ -50,21 +38,8 @@ class SignupController extends GetxController {
   }
 
   void clear() {
-    nameController.clear();
     emailController.clear();
     passwordController.clear();
-  }
-
-  String? validateName(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'Precisamos saber seu nome para continuar';
-    }
-
-    if (value.length < 3 || value.split(' ').length < 2) {
-      return 'Parece que esse nome não esta completo';
-    }
-
-    return null;
   }
 
   String? validateEmail(String? value) {
@@ -73,18 +48,19 @@ class SignupController extends GetxController {
     }
 
     if (!GetUtils.isEmail(value)) {
-      return 'Parece que esse email não é valido';
+      return 'Precisamos de um email válido';
     }
+
     return null;
   }
 
   String? validatePassword(String? value) {
     if (value == null || value.isEmpty) {
-      return 'Você precisa definir uma senha para continuar';
+      return 'Precisamos saber sua senha para continuar';
     }
 
     if (value.length < 6) {
-      return 'Sua senha deve ter pelo menos 6 caracteres';
+      return 'Sua senha precisa ter pelo menos 6 caracteres';
     }
 
     return null;
@@ -94,42 +70,43 @@ class SignupController extends GetxController {
     return _formKey.currentState?.validate() ?? false;
   }
 
-  Future<void> signup(BuildContext context) async {
-    ScaffoldMessengerState scaffold = ScaffoldMessenger.of(context);
-
-    _showSnakBar(scaffold);
-
+  Future<void> login(BuildContext context) async {
     if (!isValid()) {
       return;
     }
 
+    ScaffoldMessengerState scaffold = ScaffoldMessenger.of(context);
+
+    _showSnakBar(scaffold);
     try {
-      UserResponse response = await userService.signup(name, email, password);
-      print({
-        'id': response.id,
-        'name': response.name,
-        'email': response.email,
-        'createdAt': response.createdAt,
-      });
-    } on DioException catch (error) {
-      Navigator.push(
-        context,
-        RouteBinding.generateRoute(
-          RouteSettings(
-            name: RouteBinding.error,
-            arguments: error,
-          ),
-        ),
-      );
+      AuthResponse response = await userService.auth(email, password);
+      await _storageService.set('token', response.accessToken!);
+      print(await _storageService.get('token'));
+      Navigator.of(context).pushNamed(RouteBinding.home);
+    } catch (e) {
+      print(e);
+      _hideSnakBar(scaffold);
+      _showFailedLoginSnackBar(scaffold, context, e);
+      clear();
     } finally {
       _hideSnakBar(scaffold);
     }
   }
 
+  void _showFailedLoginSnackBar(
+      ScaffoldMessengerState scaffold, BuildContext context, Object e) {
+    scaffold.showSnackBar(
+      SnackBar(
+        content: Text(e.toString()),
+        backgroundColor: Theme.of(context).colorScheme.error,
+      ),
+    );
+  }
+
   void _showSnakBar(ScaffoldMessengerState scaffold) {
     scaffold.showSnackBar(
       const SnackBar(
-        content: Text('Estamos criando sua conta, aguarde um momento...'),
+        content: Text('Fazendo login...'),
       ),
     );
   }

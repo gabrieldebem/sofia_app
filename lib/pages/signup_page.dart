@@ -96,8 +96,16 @@ class _SignupPageState extends State<SignupPage> {
                       child: const Text('Já tenho uma conta'),
                     ),
                     ElevatedButton(
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all<Color>(
+                          Theme.of(context).colorScheme.secondary,
+                        ),
+                      ),
                       onPressed: () => _controller.signup(context),
-                      child: const Icon(Icons.arrow_forward),
+                      child: Icon(
+                        Icons.arrow_forward,
+                        color: Theme.of(context).colorScheme.onSecondary,
+                      ),
                     ),
                   ],
                 ),
