@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:get/get.dart';
 import 'package:sofia_app/clients/sofia.client.dart';
 import 'package:sofia_app/view_models/auth_response.dart';
@@ -14,8 +12,7 @@ class UserService {
       password: password,
     );
 
-    var decodedResponse = jsonDecode(response.body) as Map<String, dynamic>;
-    return AuthResponse.fromJson(decodedResponse);
+    return AuthResponse.fromJson(response.data);
   }
 
   Future<UserResponse> signup(
@@ -29,13 +26,6 @@ class UserService {
       password: password,
     );
 
-    var decodedResponse = jsonDecode(response.body) as Map<String, dynamic>;
-
-    if (response.statusCode != 200) {
-      throw Exception(
-          decodedResponse['message'] ?? 'Houve uma falha ao criar sua conta.');
-    }
-
-    return UserResponse.fromJson(decodedResponse);
+    return UserResponse.fromJson(response.data);
   }
 }

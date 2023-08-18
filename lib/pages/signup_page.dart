@@ -96,7 +96,7 @@ class _SignupPageState extends State<SignupPage> {
                       child: const Text('Já tenho uma conta'),
                     ),
                     ElevatedButton(
-                      onPressed: () => _controller.submit(context),
+                      onPressed: () => _controller.signup(context),
                       child: const Icon(Icons.arrow_forward),
                     ),
                   ],

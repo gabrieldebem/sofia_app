@@ -1,7 +1,7 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sofia_app/bindings/route.binding.dart';
-import 'package:sofia_app/pages/error_page.dart';
 import 'package:sofia_app/services/users.service.dart';
 import 'package:sofia_app/view_models/user_response.dart';
 
@@ -94,8 +94,12 @@ class SignupController extends GetxController {
     return _formKey.currentState?.validate() ?? false;
   }
 
-  Future<void> submit(BuildContext context) async {
-    if (!_formKey.currentState!.validate()) {
+  Future<void> signup(BuildContext context) async {
+    ScaffoldMessengerState scaffold = ScaffoldMessenger.of(context);
+
+    _showSnakBar(scaffold);
+
+    if (!isValid()) {
       return;
     }
 
@@ -107,7 +111,7 @@ class SignupController extends GetxController {
         'email': response.email,
         'createdAt': response.createdAt,
       });
-    } on Exception catch (error, stacktrace) {
+    } on DioException catch (error) {
       Navigator.push(
         context,
         RouteBinding.generateRoute(
@@ -117,6 +121,20 @@ class SignupController extends GetxController {
           ),
         ),
       );
+    } finally {
+      _hideSnakBar(scaffold);
     }
+  }
+
+  void _showSnakBar(ScaffoldMessengerState scaffold) {
+    scaffold.showSnackBar(
+      const SnackBar(
+        content: Text('Estamos criando sua conta, aguarde um momento...'),
+      ),
+    );
+  }
+
+  void _hideSnakBar(ScaffoldMessengerState scaffold) {
+    scaffold.hideCurrentSnackBar();
   }
 }

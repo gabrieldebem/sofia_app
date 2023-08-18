@@ -1,7 +1,8 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
 class ErrorPage extends StatelessWidget {
-  final Exception exception;
+  final DioException exception;
   const ErrorPage({
     Key? key,
     required this.exception,
@@ -11,16 +12,30 @@ class ErrorPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Ocorreu um erro'),
-      ),
-      body: Center(
-        child: Text(
-          exception.toString(),
-          style: const TextStyle(
-            fontSize: 18.0,
+        title: Text(
+          'Ocorreu um erro',
+          style: TextStyle(
+            color: Theme.of(context).colorScheme.onTertiary,
           ),
+        ),
+        backgroundColor: Theme.of(context).colorScheme.tertiary,
+        leading: IconButton(
+          icon: Icon(
+            Icons.arrow_back_ios,
+            color: Theme.of(context).colorScheme.onTertiary,
+          ),
+          onPressed: () => Navigator.of(context).pop(),
         )
       ),
+      body: Center(
+          child: Text(
+        exception.response?.data['message'],
+        style: TextStyle(
+          fontSize: 18.0,
+          color: Theme.of(context).colorScheme.onTertiaryContainer,
+          fontWeight: FontWeight.w400,
+        ),
+      )),
     );
   }
 }

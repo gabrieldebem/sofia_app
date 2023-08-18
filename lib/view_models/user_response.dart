@@ -11,7 +11,7 @@ class UserResponse {
       id: json['id'],
       email: json['email'],
       name: json['name'],
-      createdAt: json['createdAt'],
+      createdAt: json['created_at'],
     );
   }
 }

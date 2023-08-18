@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:sofia_app/pages/error_page.dart';
 import 'package:sofia_app/pages/home_page.dart';
@@ -22,11 +23,11 @@ class RouteBinding {
         switch (settings.name) {
             case RouteBinding.error:
                 return MaterialPageRoute(
-                    builder: (context) => ErrorPage(exception: settings.arguments as Exception),
+                    builder: (context) => ErrorPage(exception: settings.arguments as DioException),
                 );
             default:
                 return MaterialPageRoute(
-                    builder: (context) => ErrorPage(exception: Exception('Rota não encontrada')),
+                    builder: (context) => ErrorPage(exception: settings.arguments as DioException),
                 );
         }
     }
