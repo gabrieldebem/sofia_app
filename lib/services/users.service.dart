@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:get/get.dart';
 import 'package:sofia_app/clients/sofia.client.dart';
 import 'package:sofia_app/view_models/auth_response.dart';
@@ -25,6 +26,12 @@ class UserService {
       email: email,
       password: password,
     );
+
+    return UserResponse.fromJson(response.data);
+  }
+
+  Future<UserResponse> getUser() async {
+    var response = await client.getUser();
 
     return UserResponse.fromJson(response.data);
   }

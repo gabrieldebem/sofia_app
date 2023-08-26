@@ -8,8 +8,13 @@ class GuestPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: const Text('Sofia App'),
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        title: Text(
+          'Sofia App',
+          style: TextStyle(
+            color: Theme.of(context).colorScheme.onPrimary,
+          ),
+        ),
       ),
       body: Center(
         child: Column(
@@ -26,7 +31,7 @@ class GuestPage extends StatelessWidget {
                         Colors.black,
                       ),
                       backgroundColor: MaterialStateProperty.all<Color>(
-                        Colors.white,
+                        Theme.of(context).colorScheme.onPrimary,
                       ),
                     ),
                     onPressed: () {
@@ -35,7 +40,9 @@ class GuestPage extends StatelessWidget {
                     child: Text(
                       'Quero criar uma conta',
                       style: TextStyle(
-                        color: Theme.of(context).colorScheme.primary,
+                        color: Theme.of(context).colorScheme.secondary,
+                        fontSize: 18.0,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
                   ),
@@ -51,7 +58,8 @@ class GuestPage extends StatelessWidget {
                       Colors.black,
                     ),
                     backgroundColor: MaterialStateProperty.all<Color>(
-                        Theme.of(context).colorScheme.primary),
+                      Theme.of(context).colorScheme.primary,
+                    ),
                   ),
                   onPressed: () {
                     Navigator.pushNamed(context, RouteBinding.login);
@@ -60,6 +68,8 @@ class GuestPage extends StatelessWidget {
                     'Já tenho uma conta',
                     style: TextStyle(
                       color: Theme.of(context).colorScheme.onPrimary,
+                      fontSize: 18.0,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
                 ),

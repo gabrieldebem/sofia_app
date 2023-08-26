@@ -105,12 +105,6 @@ class SignupController extends GetxController {
 
     try {
       UserResponse response = await userService.signup(name, email, password);
-      print({
-        'id': response.id,
-        'name': response.name,
-        'email': response.email,
-        'createdAt': response.createdAt,
-      });
     } on DioException catch (error) {
       Navigator.push(
         context,

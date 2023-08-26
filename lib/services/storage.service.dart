@@ -1,4 +1,4 @@
-import 'package:localstorage/localstorage.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 abstract class IStorageService {
   Future<void> set(String key, String value);
@@ -7,20 +7,21 @@ abstract class IStorageService {
 }
 
 class StorageService implements IStorageService {
-  final LocalStorage _storage = LocalStorage('sofia_app');
-
   @override
   Future<void> delete(String key) async {
-    await _storage.deleteItem(key);
+    final storage = await SharedPreferences.getInstance();
+    await storage.remove(key);
   }
 
   @override
   Future<String?> get(String key) async {
-    return await _storage.getItem(key);
+    final storage = await SharedPreferences.getInstance();
+    return storage.getString(key);
   }
 
   @override
-  Future<void> set(String key, String value) {
-    return _storage.setItem(key, value);
+  Future<void> set(String key, String value) async {
+    final storage = await SharedPreferences.getInstance();
+    await storage.setString(key, value);
   }
 }

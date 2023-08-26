@@ -29,4 +29,22 @@ class SofiaClient extends IClient {
       },
     );
   }
+
+  Future<Response> getUser() async {
+    String? token = await getToken();
+
+    return await client(headers: {'Authorization': 'Bearer $token'}).get(
+      '/users/me',
+    );
+  }
+
+  Future<Response> listSpends() async {
+    String? token = await getToken();
+
+    return await client(
+      headers: {'Authorization': 'Bearer $token'},
+    ).get(
+      '/spends',
+    );
+  }
 }
