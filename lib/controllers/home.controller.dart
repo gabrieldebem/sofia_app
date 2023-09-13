@@ -1,32 +1,40 @@
-import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
+import 'package:sofia_app/bindings/routes.dart';
 import 'package:sofia_app/services/spends.service.dart';
 import 'package:sofia_app/services/users.service.dart';
-import 'package:sofia_app/view_models/spend_response.dart';
-import 'package:sofia_app/view_models/user_response.dart';
+import 'package:sofia_app/models/spend.dart';
+import 'package:sofia_app/models/user.dart';
 
-class HomeController {
+class HomeController extends GetxController {
   final UserService _userService = Get.put(UserService());
   final SpendService _spendService = Get.put(SpendService());
 
-  final Rx<UserResponse> _user = UserResponse().obs;
-  final RxList<SpendResponse> _spends = <SpendResponse>[].obs;
+  final Rx<User> _user = User().obs;
+  final RxList<Spend> _spends = <Spend>[].obs;
 
-  UserResponse get user => _user.value;
-  List<SpendResponse> get spends => _spends;
+  User get user => _user.value;
+  List<Spend> get spends => _spends;
 
-  set user(UserResponse? value) => _user.value = value!;
-  set spends(List<SpendResponse> value) => _spends.value = value;
+  set user(User? value) => _user.value = value!;
+  set spends(List<Spend> value) => _spends.value = value;
 
-  Future<void> fetchUser(BuildContext context) async {
+  @override
+  void onInit() {
+    fetchUser();
+    fetchSpends();
+
+    super.onInit();
+  }
+
+  Future<void> fetchUser() async {
     try {
       user = await _userService.getUser();
     } catch (e) {
-      Navigator.pushNamed(context, '/login');
+      Get.toNamed(Routes.guest);
     }
   }
 
   Future<void> fetchSpends() async {
-    spends = await _spendService.listTransactions();
+    spends = await _spendService.listSpends();
   }
 }

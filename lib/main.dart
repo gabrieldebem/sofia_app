@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:sofia_app/bindings/route.binding.dart';
+import 'package:get/get.dart';
+import 'package:sofia_app/bindings/routes.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    const MyApp(),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -10,14 +13,14 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
+    return GetMaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'Sofia App',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.lime),
-        useMaterial3: true,
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.teal),
       ),
-      initialRoute: RouteBinding.initialRoute,
-      routes: RouteBinding.routes(),
+      initialRoute: Routes.initialRoute,
+      getPages: Routes.pages,
     );
   }
 }

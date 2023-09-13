@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:sofia_app/bindings/route.binding.dart';
+import 'package:sofia_app/bindings/routes.dart';
 import 'package:sofia_app/controllers/login.controller.dart';
 
 class LoginPage extends StatefulWidget {
@@ -18,6 +18,10 @@ class _LoginPageState extends State<LoginPage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        leading: IconButton(
+          onPressed: () => Get.toNamed(Routes.guest),
+          icon: const Icon(Icons.arrow_back),
+        ),
         title: const Text('Acesse sua conta'),
       ),
       body: Container(
@@ -77,7 +81,7 @@ class _LoginPageState extends State<LoginPage> {
                   children: [
                     TextButton(
                       onPressed: () {
-                        Navigator.pushNamed(context, RouteBinding.signup);
+                        Get.toNamed(Routes.signup);
                       },
                       child: const Text('Quero criar uma conta'),
                     ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:sofia_app/bindings/route.binding.dart';
+import 'package:get/get.dart';
+import 'package:sofia_app/bindings/routes.dart';
 
 class GuestPage extends StatelessWidget {
   const GuestPage({Key? key}) : super(key: key);
@@ -8,6 +9,7 @@ class GuestPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         backgroundColor: Theme.of(context).colorScheme.primary,
         title: Text(
           'Sofia App',
@@ -22,7 +24,7 @@ class GuestPage extends StatelessWidget {
           children: [
             Expanded(
               child: Container(
-                color: Theme.of(context).colorScheme.primary,
+                color: Theme.of(context).colorScheme.secondary,
                 child: Center(
                   child: TextButton(
                     style: ButtonStyle(
@@ -35,7 +37,7 @@ class GuestPage extends StatelessWidget {
                       ),
                     ),
                     onPressed: () {
-                      Navigator.pushNamed(context, RouteBinding.signup);
+                      Get.toNamed(Routes.signup);
                     },
                     child: Text(
                       'Quero criar uma conta',
@@ -62,7 +64,7 @@ class GuestPage extends StatelessWidget {
                     ),
                   ),
                   onPressed: () {
-                    Navigator.pushNamed(context, RouteBinding.login);
+                    Get.toNamed(Routes.login);
                   },
                   child: Text(
                     'Já tenho uma conta',

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:sofia_app/controllers/splash.controller.dart';
 
 class SplashPage extends StatefulWidget {
@@ -19,7 +20,7 @@ class _SplashPageState extends State<SplashPage> {
       _splashController.init(),
       Future.delayed(const Duration(seconds: 3)),
     ]).then((value) {
-      Navigator.pushReplacementNamed(context, value[0]);
+      Get.toNamed(value[0]);
     });
   }
 

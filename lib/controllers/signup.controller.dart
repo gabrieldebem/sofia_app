@@ -1,9 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:sofia_app/bindings/route.binding.dart';
+import 'package:sofia_app/bindings/routes.dart';
 import 'package:sofia_app/services/users.service.dart';
-import 'package:sofia_app/view_models/user_response.dart';
 
 class SignupController extends GetxController {
   UserService userService = Get.put(UserService());
@@ -104,16 +103,11 @@ class SignupController extends GetxController {
     }
 
     try {
-      UserResponse response = await userService.signup(name, email, password);
+      await userService.signup(name, email, password);
     } on DioException catch (error) {
-      Navigator.push(
-        context,
-        RouteBinding.generateRoute(
-          RouteSettings(
-            name: RouteBinding.error,
-            arguments: error,
-          ),
-        ),
+      Get.toNamed(
+        Routes.error,
+        arguments: error,
       );
     } finally {
       _hideSnakBar(scaffold);

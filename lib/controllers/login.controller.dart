@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:sofia_app/bindings/route.binding.dart';
+import 'package:sofia_app/bindings/routes.dart';
 import 'package:sofia_app/services/storage.service.dart';
 import 'package:sofia_app/services/users.service.dart';
-import 'package:sofia_app/view_models/auth_response.dart';
+import 'package:sofia_app/models/auth_response.dart';
 
 class LoginController extends GetxController {
   UserService userService = Get.put(UserService());
-  IStorageService _storageService = Get.put(StorageService());
+  final IStorageService _storageService = Get.put(StorageService());
 
   final _formKey = GlobalKey<FormState>();
   final _email = ''.obs;
@@ -82,7 +82,7 @@ class LoginController extends GetxController {
       AuthResponse response = await userService.auth(email, password);
       await _storageService.set('token', response.accessToken!);
 
-      Navigator.of(context).pushNamed(RouteBinding.home);
+      Get.toNamed(Routes.home);
     } catch (e) {
       _hideSnakBar(scaffold);
       _showFailedLoginSnackBar(scaffold, context, e);

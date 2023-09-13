@@ -1,4 +1,4 @@
-class SpendResponse {
+class Spend {
   final String id;
   final double amount;
   final String description;
@@ -6,7 +6,7 @@ class SpendResponse {
   final String category;
   final String date;
 
-  SpendResponse({
+  Spend({
     required this.id,
     required this.amount,
     required this.description,
@@ -15,10 +15,11 @@ class SpendResponse {
     required this.date,
   });
 
-  factory SpendResponse.fromJson(Map<String, dynamic> json) {
-    return SpendResponse(
+  factory Spend.fromJson(Map<String, dynamic> json) {
+      print(json);
+    return Spend(
       id: json['id'],
-      amount: json['amount'],
+      amount: json['amount'] != null ? double.parse(json['amount'].toString()) : 0.0,
       description: json['description'] ?? 'Sem Descriçao',
       type: json['type'],
       category: json['category'] ?? 'Categoria Não Definida',

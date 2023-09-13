@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class ErrorPage extends StatelessWidget {
   final DioException exception;
@@ -24,7 +25,7 @@ class ErrorPage extends StatelessWidget {
             Icons.arrow_back_ios,
             color: Theme.of(context).colorScheme.onTertiary,
           ),
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: () => Get.back(),
         )
       ),
       body: Center(
