@@ -1,71 +1,75 @@
 import 'package:flutter/material.dart';
-import 'package:sofia_app/bindings/route.binding.dart';
+import 'package:get/get.dart';
+import 'package:sofia_app/bindings/routes.dart';
+import 'package:sofia_app/components/spends_list.dart';
+import 'package:sofia_app/controllers/home.controller.dart';
+import 'package:sofia_app/components/create_spend_dialog.dart';
+import 'package:sofia_app/pages/profile_page.dart';
 
-class HomePage extends StatelessWidget {
-  HomePage({Key? key}) : super(key: key);
+class HomePage extends StatefulWidget {
+  const HomePage({Key? key}) : super(key: key);
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  final HomeController _homeController = Get.put(HomeController());
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: const Text('Sofia App'),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Expanded(
-              child: Container(
-                color: Theme.of(context).colorScheme.primary,
-                child: Center(
-                  child: TextButton(
-                    style: ButtonStyle(
-                      elevation: MaterialStateProperty.all<double>(10.0),
-                      shadowColor: MaterialStateProperty.all<Color>(
-                        Colors.black,
-                      ),
-                      backgroundColor: MaterialStateProperty.all<Color>(
-                        Colors.white,
-                      ),
-                    ),
-                    onPressed: () {
-                      Navigator.pushNamed(context, RouteBinding.signup);
-                    },
-                    child: Text(
-                      'Quero criar uma conta',
-                      style: TextStyle(
-                        color: Theme.of(context).colorScheme.primary,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
+    return Obx(
+      () => Scaffold(
+        appBar: AppBar(
+          automaticallyImplyLeading: false,
+          elevation: 1,
+          actions: [
+            IconButton(
+              onPressed: () {
+                Get.toNamed(Routes.profile, arguments: ProfilePageArguments(user: _homeController.user));
+              },
+              icon: const Icon(Icons.person),
             ),
-            Expanded(
-              child: Center(
-                child: TextButton(
-                  style: ButtonStyle(
-                    elevation: MaterialStateProperty.all<double>(10.0),
-                    shadowColor: MaterialStateProperty.all<Color>(
-                      Colors.black,
-                    ),
-                    backgroundColor: MaterialStateProperty.all<Color>(
-                        Theme.of(context).colorScheme.primary),
-                  ),
-                  onPressed: () {
-                    Navigator.pushNamed(context, RouteBinding.login);
-                  },
-                  child: Text(
-                    'Já tenho uma conta',
-                    style: TextStyle(
-                      color: Theme.of(context).colorScheme.onPrimary,
-                    ),
+          ],
+          shadowColor: Theme.of(context).colorScheme.secondary,
+          title: Text(
+            "Bem vindo, ${_homeController.user.name}",
+            style: const TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ),
+        body: RefreshIndicator(
+          onRefresh: () async {
+            await _homeController.fetchSpends();
+          },
+          child: SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            child: Column(
+              children: [
+                const SizedBox(height: 20),
+                const Text(
+                  "Seus Gastos",
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.w500,
                   ),
                 ),
-              ),
-            )
-          ],
+                const SizedBox(height: 20),
+                SpendList(_homeController.spends),
+              ],
+            ),
+          )
+        ),
+        floatingActionButton: FloatingActionButton(
+          shape: const CircleBorder(),
+          onPressed: () async {
+            await showDialog(
+                context: context,
+                builder: (context) => const CreateSpendDialog());
+          },
+          child: const Icon(Icons.add),
         ),
       ),
     );
