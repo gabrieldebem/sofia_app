@@ -1,7 +1,7 @@
 import 'package:get/get.dart';
 import 'package:sofia_app/clients/sofia.client.dart';
-import 'package:sofia_app/view_models/auth_response.dart';
-import 'package:sofia_app/view_models/user_response.dart';
+import 'package:sofia_app/models/auth_response.dart';
+import 'package:sofia_app/models/user.dart';
 
 class UserService {
   SofiaClient client = Get.put(SofiaClient());
@@ -15,7 +15,7 @@ class UserService {
     return AuthResponse.fromJson(response.data);
   }
 
-  Future<UserResponse> signup(
+  Future<User> signup(
     String name,
     String email,
     String password,
@@ -26,6 +26,12 @@ class UserService {
       password: password,
     );
 
-    return UserResponse.fromJson(response.data);
+    return User.fromJson(response.data);
+  }
+
+  Future<User> getUser() async {
+    var response = await client.getUser();
+
+    return User.fromJson(response.data);
   }
 }

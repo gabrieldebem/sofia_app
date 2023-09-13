@@ -1,0 +1,4 @@
+enum SpendType {
+  income,
+  expense,
+}

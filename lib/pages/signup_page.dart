@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:sofia_app/bindings/route.binding.dart';
+import 'package:sofia_app/bindings/routes.dart';
 import 'package:sofia_app/controllers/signup.controller.dart';
 
 class SignupPage extends StatefulWidget {
@@ -17,6 +17,10 @@ class _SignupPageState extends State<SignupPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          onPressed: () => Get.toNamed(Routes.guest),
+          icon: const Icon(Icons.arrow_back),
+        ),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: const Text('Signup'),
       ),
@@ -91,13 +95,21 @@ class _SignupPageState extends State<SignupPage> {
                   children: [
                     TextButton(
                       onPressed: () {
-                        Navigator.pushNamed(context, RouteBinding.login);
+                        Get.toNamed(Routes.login);
                       },
                       child: const Text('Já tenho uma conta'),
                     ),
                     ElevatedButton(
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all<Color>(
+                          Theme.of(context).colorScheme.secondary,
+                        ),
+                      ),
                       onPressed: () => _controller.signup(context),
-                      child: const Icon(Icons.arrow_forward),
+                      child: Icon(
+                        Icons.arrow_forward,
+                        color: Theme.of(context).colorScheme.onSecondary,
+                      ),
                     ),
                   ],
                 ),
