@@ -112,6 +112,7 @@ class _HomePageState extends State<HomePage> {
             await showDialog(
                 context: context,
                 builder: (context) => const CreateSpendDialog());
+            _homeController.fetchSpends();
           },
           child: const Icon(Icons.add),
         ),
