@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sofia_app/bindings/routes.dart';
-import 'package:sofia_app/services/storage.service.dart';
-import 'package:sofia_app/services/users.service.dart';
-import 'package:sofia_app/models/auth_response.dart';
+import 'package:sofia_app/use_cases/auth_uc.dart';
 
 class LoginController extends GetxController {
-  UserService userService = Get.put(UserService());
-  final IStorageService _storageService = Get.put(StorageService());
+  final AuthUC _authUC = AuthUC();
 
   final _formKey = GlobalKey<FormState>();
   final _email = ''.obs;
@@ -79,8 +76,7 @@ class LoginController extends GetxController {
 
     _showSnakBar(scaffold);
     try {
-      AuthResponse response = await userService.auth(email, password);
-      await _storageService.set('token', response.accessToken!);
+      await _authUC.execute(email, password);
 
       Get.toNamed(Routes.home);
     } catch (e) {

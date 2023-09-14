@@ -2,10 +2,12 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sofia_app/bindings/routes.dart';
-import 'package:sofia_app/services/users.service.dart';
+import 'package:sofia_app/use_cases/auth_uc.dart';
+import 'package:sofia_app/use_cases/signup_uc.dart';
 
 class SignupController extends GetxController {
-  UserService userService = Get.put(UserService());
+  AuthUC authUC = Get.put(AuthUC());
+  SignupUC signupUC = Get.put(SignupUC());
 
   final _formKey = GlobalKey<FormState>();
   final _name = ''.obs;
@@ -103,7 +105,9 @@ class SignupController extends GetxController {
     }
 
     try {
-      await userService.signup(name, email, password);
+      await signupUC.execute(name, email, password);
+      await authUC.execute(email, password);
+      Get.offAllNamed(Routes.home);
     } on DioException catch (error) {
       Get.toNamed(
         Routes.error,

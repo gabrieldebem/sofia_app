@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:sofia_app/enums/spend_type.dart';
-import 'package:sofia_app/services/spends.service.dart';
+import 'package:sofia_app/use_cases/create_spend_uc.dart';
 
 class CreateSpendController extends GetxController {
-  final SpendService _spendService = Get.put(SpendService());
+  final CreateSpendUC _createSpendUC = Get.put(CreateSpendUC());
 
   final _formKey = GlobalKey<FormState>();
   final _amount = ''.obs;
@@ -111,7 +111,7 @@ class CreateSpendController extends GetxController {
     }
 
     try {
-      await _spendService.createSpend(
+      await _createSpendUC.execute(
         amount: NumberFormat('###.00', 'pt_BR').parse(amount.replaceAll('R\$', '')).toDouble(),
         description: description,
         category: category,
