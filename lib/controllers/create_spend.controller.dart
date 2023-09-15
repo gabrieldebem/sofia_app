@@ -12,7 +12,7 @@ class CreateSpendController extends GetxController {
   final _description = ''.obs;
   final _category = ''.obs;
   final _date = ''.obs;
-  final _type = ''.obs;
+  final _type = 'expense'.obs;
 
   GlobalKey<FormState> get formKey => _formKey;
   String get amount => _amount.value;

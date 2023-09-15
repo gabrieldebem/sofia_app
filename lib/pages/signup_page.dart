@@ -21,7 +21,6 @@ class _SignupPageState extends State<SignupPage> {
           onPressed: () => Get.toNamed(Routes.guest),
           icon: const Icon(Icons.arrow_back),
         ),
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: const Text('Signup'),
       ),
       body: Container(
