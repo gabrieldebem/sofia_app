@@ -16,7 +16,6 @@ class Spend {
   });
 
   factory Spend.fromJson(Map<String, dynamic> json) {
-      print(json);
     return Spend(
       id: json['id'],
       amount: json['amount'] != null ? double.parse(json['amount'].toString()) : 0.0,

@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:sofia_app/bindings/routes.dart';
-import 'package:sofia_app/services/storage.service.dart';
 import 'package:sofia_app/models/user.dart';
+import 'package:sofia_app/use_cases/revoke_token_uc.dart';
 
 class ProfilePageArguments {
   final User user;
@@ -11,6 +10,7 @@ class ProfilePageArguments {
 }
 
 class ProfilePage extends StatelessWidget {
+  final RevokeTokenUC _revokeTokenUC = RevokeTokenUC();
   late final ProfilePageArguments arguments;
 
   ProfilePage({Key? key}) : super(key: key) {
@@ -65,8 +65,6 @@ class ProfilePage extends StatelessWidget {
   }
 
   _logout() async {
-    StorageService service = StorageService();
-    await service.delete('token');
-    Get.offNamed(Routes.splash);
+    await _revokeTokenUC.execute();
   }
 }

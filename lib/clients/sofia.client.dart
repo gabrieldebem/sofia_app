@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:intl/intl.dart';
 import 'package:sofia_app/clients/client_interface.dart';
 import 'package:sofia_app/enums/spend_type.dart';
 
@@ -68,5 +69,18 @@ class SofiaClient extends BaseClient {
         'password': password,
       },
     );
+  }
+
+  Future<Response> getSpendPercentage({
+    required DateTime initialDate,
+    required DateTime finalDate,
+  }) async {
+    initialDate = DateFormat("yyyy-MM-dd").parse(initialDate.toString());
+    finalDate = DateFormat("yyyy-MM-dd").parse(finalDate.toString());
+
+    Dio client = await this.client();
+
+    return await client
+        .get("/spends/amount-percentage?from=$initialDate&to=$finalDate");
   }
 }
