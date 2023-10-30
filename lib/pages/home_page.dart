@@ -13,7 +13,16 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final HomeController _homeController = Get.put(HomeController());
+  final HomeController _homeController = Get.find<HomeController>();
+
+  @override
+  void initState() {
+    Future.wait([
+      _homeController.fetchSpends(),
+      _homeController.fetchUser(),
+    ]);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,8 +54,7 @@ class _HomePageState extends State<HomePage> {
           onRefresh: () async {
             await _homeController.fetchSpends();
             if (_homeController.user.id == null) {
-              print("caralho");
-              await _homeController.fetchSpends();
+              await _homeController.fetchUser();
             }
           },
           child: SingleChildScrollView(
@@ -64,7 +72,7 @@ class _HomePageState extends State<HomePage> {
                 const SizedBox(height: 20),
                 SizedBox(
                   height: 600,
-                  child: _homeController.spends.isEmpty
+                  child: _homeController.transactions.isEmpty
                       ? Center(
                           child: Text(
                             'Nenhum gasto cadastrado',
@@ -73,13 +81,13 @@ class _HomePageState extends State<HomePage> {
                         )
                       : ListView.builder(
                           padding: const EdgeInsets.all(8),
-                          itemCount: _homeController.spends.length,
+                          itemCount: _homeController.transactions.length,
                           itemBuilder: (ctx, index) {
                             return ListTile(
                               isThreeLine: true,
                               visualDensity: const VisualDensity(vertical: 2),
                               title: Text(
-                                _homeController.spends[index].category
+                                _homeController.transactions[index].category
                                     .toUpperCase(),
                                 style: const TextStyle(
                                   fontSize: 18,
@@ -87,21 +95,19 @@ class _HomePageState extends State<HomePage> {
                                 ),
                               ),
                               subtitle: Text(
-                                _homeController
-                                        .spends[index].description.isEmpty
-                                    ? "Sem descrição"
-                                    : _homeController.spends[index].description,
+                                "R\$ ${_homeController.transactions[index].amount} - ${_homeController.transactions[index].description}",
                                 style: const TextStyle(
                                   fontSize: 16,
                                 ),
                               ),
-                              trailing: Text(
-                                "R\$ ${_homeController.spends[index].amount.toString()}",
-                                style: const TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
+                              trailing: IconButton(
+                                  onPressed: () =>
+                                      _homeController.deleteTransaction(
+                                          _homeController.transactions[index]),
+                                  icon: const Icon(
+                                    Icons.delete,
+                                    color: Colors.red,
+                                  )),
                             );
                           },
                         ),
@@ -132,10 +138,8 @@ class _HomePageState extends State<HomePage> {
         floatingActionButton: FloatingActionButton(
           shape: const CircleBorder(),
           onPressed: () async {
-            await showDialog(
-                context: context,
-                builder: (context) => const CreateSpendDialog());
-            _homeController.fetchSpends();
+            await Get.dialog(const CreateSpendDialog());
+            await _homeController.fetchSpends();
           },
           child: const Icon(Icons.add),
         ),

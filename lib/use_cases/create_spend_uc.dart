@@ -1,15 +1,14 @@
+import 'package:get/get.dart';
 import 'package:sofia_app/clients/sofia.client.dart';
-import 'package:sofia_app/enums/spend_type.dart';
-import 'package:sofia_app/models/spend.dart';
+import 'package:sofia_app/models/transaction.dart';
 
 class CreateSpendUC {
-  final SofiaClient _client = SofiaClient();
+  final ISofiaClient _client = Get.find<ISofiaClient>();
 
-  Future<Spend> execute({
+  Future<Transaction> call({
     required double amount,
     required String category,
     required DateTime date,
-    required String type,
     String? description,
   }) async {
     final response = await _client.createSpend(
@@ -17,10 +16,8 @@ class CreateSpendUC {
         description: description,
         category: category,
         date: date,
-        type: SpendType.values.firstWhere(
-          (e) => e.toString() == 'SpendType.$type',
-        ));
+        );
 
-    return Spend.fromJson(response.data);
+    return Transaction.fromJson(response.data);
   }
 }

@@ -75,6 +75,20 @@ class _SignupPageState extends State<SignupPage> {
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: TextFormField(
+                  controller: _controller.phoneController,
+                  decoration: const InputDecoration(
+                    labelText: 'Telefone',
+                    border: OutlineInputBorder(),
+                    icon: Icon(Icons.phone),
+                  ),
+                  keyboardType: TextInputType.phone,
+                  validator: (value) => _controller.validatePhone(value),
+                  onChanged: (value) => _controller.onPhoneChanged(value),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextFormField(
                   controller: _controller.passwordController,
                   decoration: const InputDecoration(
                     labelText: 'Sua melhor senha',

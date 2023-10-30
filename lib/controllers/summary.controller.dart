@@ -4,7 +4,8 @@ import 'package:sofia_app/models/percentage.dart';
 import 'package:sofia_app/use_cases/get_spends_percentage_uc.dart';
 
 class SummaryController extends GetxController {
-  final GetSpendsPercentageUC _getSpendsPercentageUC = GetSpendsPercentageUC();
+  final GetSpendsPercentageUC _getSpendsPercentageUC =
+      Get.put(GetSpendsPercentageUC());
 
   final Rx<DateTime> _initialDate =
       DateTime.now().subtract(const Duration(days: 30)).obs;
@@ -17,25 +18,26 @@ class SummaryController extends GetxController {
 
   set initialDate(DateTime value) => _initialDate.value = value;
   set finalDate(DateTime value) => _finalDate.value = value;
-  set spendsPercentage(List<Percentage> value) => _spendsPercentage.value = value;
+  set spendsPercentage(List<Percentage> value) =>
+      _spendsPercentage.value = value;
 
   TextEditingController initialDateController = TextEditingController();
   TextEditingController finalDateController = TextEditingController();
 
+  Future<void> fetchSpendsPercentage() async {
+    spendsPercentage = await _getSpendsPercentageUC(initialDate, finalDate);
+  }
+
   @override
-  void onInit() async {
-      initialDateController.addListener(() {
-        initialDate = DateTime.parse(initialDateController.text);
-      });
+  void onInit() {
+    initialDateController.addListener(() {
+      initialDate = DateTime.parse(initialDateController.text);
+    });
 
-      finalDateController.addListener(() {
-        finalDate = DateTime.parse(finalDateController.text);
-      });
-      
-      super.onInit();
-    }
+    finalDateController.addListener(() {
+      finalDate = DateTime.parse(finalDateController.text);
+    });
 
-    fetchSpendsPercentage() async {
-      spendsPercentage = await _getSpendsPercentageUC.execute(initialDate, finalDate);
-    }
+    super.onInit();
+  }
 }

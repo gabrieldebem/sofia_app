@@ -32,12 +32,20 @@ class ProfilePage extends StatelessWidget {
                 contentPadding: const EdgeInsets.symmetric(horizontal: 32),
                 title: const Text('Nome:'),
                 subtitle: Text(arguments.user.name!),
+                trailing: IconButton(
+                  onPressed: () {},
+                  icon: const Icon(Icons.edit),
+                )
               ),
               ListTile(
                 contentPadding: const EdgeInsets.symmetric(horizontal: 32),
                 style: ListTileStyle.list,
                 title: const Text('Email:'),
                 subtitle: Text(arguments.user.email!),
+                trailing: IconButton(
+                  onPressed: () {},
+                  icon: const Icon(Icons.edit),
+                )
               ),
               Expanded(child: Container()),
               TextButton(

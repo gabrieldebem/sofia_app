@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:sofia_app/bindings/initial_bindings.dart';
 import 'package:sofia_app/bindings/routes.dart';
 
 void main() {
@@ -21,6 +22,7 @@ class MyApp extends StatelessWidget {
       ),
       initialRoute: Routes.initialRoute,
       getPages: Routes.pages,
+      initialBinding: InitialBindings(),
     );
   }
 }

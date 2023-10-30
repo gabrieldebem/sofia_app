@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sofia_app/bindings/routes.dart';
@@ -76,10 +77,10 @@ class LoginController extends GetxController {
 
     _showSnakBar(scaffold);
     try {
-      await _authUC.execute(email, password);
+      await _authUC(email, password);
 
       Get.toNamed(Routes.home);
-    } catch (e) {
+    } on DioException catch (e) {
       _hideSnakBar(scaffold);
       _showFailedLoginSnackBar(scaffold, context, e);
 
@@ -90,10 +91,10 @@ class LoginController extends GetxController {
   }
 
   void _showFailedLoginSnackBar(
-      ScaffoldMessengerState scaffold, BuildContext context, Object e) {
+      ScaffoldMessengerState scaffold, BuildContext context, DioException e) {
     scaffold.showSnackBar(
       SnackBar(
-        content: Text(e.toString()),
+        content: Text(e.response?.data['message'] ?? 'Ocorreu um erro, tente novamente.'),
         backgroundColor: Theme.of(context).colorScheme.error,
       ),
     );

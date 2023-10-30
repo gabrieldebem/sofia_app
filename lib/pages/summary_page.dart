@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:sofia_app/controllers/summary.controller.dart';
 
 class SummaryPage extends StatefulWidget {
@@ -9,7 +11,15 @@ class SummaryPage extends StatefulWidget {
 }
 
 class _SummaryPageState extends State<SummaryPage> {
-  final SummaryController _summaryController = SummaryController();
+  final SummaryController _summaryController = Get.put(SummaryController());
+
+  @override
+  void initState() {
+    Future.wait([
+      _summaryController.fetchSpendsPercentage(),
+    ]);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +45,7 @@ class _SummaryPageState extends State<SummaryPage> {
             contentPadding: const EdgeInsets.symmetric(horizontal: 16),
             title: const Text('Data inicial'),
             subtitle: Text(
-              '${_summaryController.initialDate.day}/${_summaryController.initialDate.month}/${_summaryController.initialDate.year}',
+              DateFormat('dd/MM/yyyy').format(_summaryController.initialDate),
             ),
             trailing: IconButton(
               onPressed: () {
@@ -62,7 +72,7 @@ class _SummaryPageState extends State<SummaryPage> {
             contentPadding: const EdgeInsets.symmetric(horizontal: 16),
             title: const Text('Data final'),
             subtitle: Text(
-              '${_summaryController.finalDate.day}/${_summaryController.finalDate.month}/${_summaryController.finalDate.year}',
+              DateFormat('dd/MM/yyyy').format(_summaryController.finalDate),
             ),
             trailing: IconButton(
               onPressed: () {
@@ -109,22 +119,28 @@ class _SummaryPageState extends State<SummaryPage> {
             ),
           ),
           SizedBox(
-            height: 500,
+            height: 400,
             child: SingleChildScrollView(
               child: Column(
-                children: [
-                  ..._summaryController.spendsPercentage.map((percentage) {
-                    return ListTile(
-                      title: Text("Categoria: ${percentage.category}"),
-                      subtitle: Text("Porcentagem: ${percentage.percentage}"),
-                    );
-                  }).toList(),
-                ],
+                children: _getPercentages(),
               ),
             ),
           )
         ],
       ),
     );
+  }
+
+  List<Widget> _getPercentages() {
+    return _summaryController.spendsPercentage.map((percentage) {
+      return Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: ListTile(
+          title: Text("Categoria: ${percentage.category}"),
+          subtitle: Text("Porcentagem: ${percentage.percentage}"),
+          tileColor: Colors.grey[200],
+        ),
+      );
+    }).toList();
   }
 }

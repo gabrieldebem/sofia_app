@@ -1,14 +1,15 @@
+import 'package:get/get.dart';
 import 'package:sofia_app/clients/sofia.client.dart';
-import 'package:sofia_app/models/spend.dart';
+import 'package:sofia_app/models/transaction.dart';
 
 class ListSpendsUC {
-  final SofiaClient _client = SofiaClient();
+  final ISofiaClient _client = Get.find<ISofiaClient>();
 
-  Future<List<Spend>> execute() async {
+  Future<List<Transaction>> execute() async {
     var response = await _client.listSpends();
 
     return (response.data as List)
-        .map((spend) => Spend.fromJson(spend))
+        .map((spend) => Transaction.fromJson(spend))
         .toList();
   }
 }

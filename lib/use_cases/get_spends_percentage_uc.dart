@@ -1,11 +1,12 @@
+import 'package:get/get.dart';
 import 'package:sofia_app/clients/sofia.client.dart';
 import 'package:sofia_app/models/percentage.dart';
 
 class GetSpendsPercentageUC {
-  final SofiaClient _sofiaClient = SofiaClient();
+  final ISofiaClient _client = Get.find<ISofiaClient>();
 
-  Future<List<Percentage>> execute(DateTime initialDate, DateTime finalDate) async {
-    final response = await _sofiaClient.getSpendPercentage(
+  Future<List<Percentage>> call(DateTime initialDate, DateTime finalDate) async {
+    final response = await _client.getSpendPercentage(
       initialDate: initialDate,
       finalDate: finalDate,
     );

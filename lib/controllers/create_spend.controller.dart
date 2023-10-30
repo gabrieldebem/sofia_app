@@ -1,7 +1,8 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:sofia_app/enums/spend_type.dart';
+import 'package:sofia_app/bindings/routes.dart';
 import 'package:sofia_app/use_cases/create_spend_uc.dart';
 
 class CreateSpendController extends GetxController {
@@ -11,27 +12,23 @@ class CreateSpendController extends GetxController {
   final _amount = ''.obs;
   final _description = ''.obs;
   final _category = ''.obs;
-  final _date = ''.obs;
-  final _type = 'expense'.obs;
+  final Rx<DateTime> _date = DateTime.now().obs;
 
   GlobalKey<FormState> get formKey => _formKey;
   String get amount => _amount.value;
   String get description => _description.value;
   String get category => _category.value;
-  String get date => _date.value;
-  String get type => _type.value;
+  DateTime get date => _date.value;
 
   set amount(String value) => _amount(value);
   set description(String value) => _description(value);
   set category(String value) => _category(value);
-  set date(String value) => _date(value);
-  set type(String value) => _type(value);
+  set date(DateTime value) => _date(value);
 
   TextEditingController amountController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
   TextEditingController categoryController = TextEditingController();
   TextEditingController dateController = TextEditingController();
-  TextEditingController typeController = TextEditingController();
 
   void onAmountChanged(String value) => amount = value;
 
@@ -39,9 +36,7 @@ class CreateSpendController extends GetxController {
 
   void onCategoryChanged(String value) => category = value;
 
-  void onDateChanged(String value) => date = value;
-
-  void onTypeChanged(String value) => type = value;
+  void onDateChanged(DateTime value) => date = value;
 
   @override
   void onInit() {
@@ -51,8 +46,8 @@ class CreateSpendController extends GetxController {
     descriptionController
         .addListener(() => description = descriptionController.text);
     categoryController.addListener(() => category = categoryController.text);
-    dateController.addListener(() => date = dateController.text);
-    typeController.addListener(() => type = typeController.text);
+    dateController
+        .addListener(() => date = DateTime.parse(dateController.text));
 
     super.onInit();
   }
@@ -62,7 +57,6 @@ class CreateSpendController extends GetxController {
     descriptionController.clear();
     categoryController.clear();
     dateController.clear();
-    typeController.clear();
   }
 
   String? validateAmount(String? value) {
@@ -89,18 +83,6 @@ class CreateSpendController extends GetxController {
     return null;
   }
 
-  String? validateType(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'Foi uma despesa ou uma receita?';
-    }
-
-    if (value != SpendType.expense.name && value != SpendType.income.name) {
-      return 'Tipo inválido';
-    }
-
-    return null;
-  }
-
   bool isValid() {
     return _formKey.currentState?.validate() ?? false;
   }
@@ -109,33 +91,32 @@ class CreateSpendController extends GetxController {
     if (!isValid()) {
       return;
     }
-
     try {
-      await _createSpendUC.execute(
-        amount: NumberFormat('###.00', 'pt_BR').parse(amount.replaceAll('R\$', '')).toDouble(),
+      await _createSpendUC(
+        amount: NumberFormat('###.00', 'pt_BR')
+            .parse(amount.replaceAll('R\$', ''))
+            .toDouble(),
         description: description,
         category: category,
-        date: DateFormat('dd/MM/yyyy').parse(date),
-        type: type,
+        date: date,
       );
 
-      ScaffoldMessengerState scaffold = ScaffoldMessenger.of(context);
-      _showSuccessSnackBar(scaffold);
-    } catch (e) {
-      print(e.toString());
+      Get.showSnackbar(const GetSnackBar(
+        title: 'Sucesso!',
+        message: 'Sua transação foi registrada com sucesso!',
+        duration: Duration(seconds: 5),
+      ));
+    } on DioException catch (e) {
+      Get.showSnackbar(GetSnackBar(
+        title: 'Ops!',
+        message:
+            e.response?.data['message'].toString() ?? 'Erro ao criar despesa',
+        duration: const Duration(seconds: 5),
+      ));
     } finally {
+      Get.offAllNamed(Routes.home);
       clear();
-      Get.back();
     }
-  }
-
-  _showSuccessSnackBar(ScaffoldMessengerState scaffold) {
-    scaffold.showSnackBar(
-      const SnackBar(
-        content: Text('Sua despesa foi criada com sucesso!'),
-        backgroundColor: Colors.green,
-      ),
-    );
   }
 
   pickDate(BuildContext context) async {

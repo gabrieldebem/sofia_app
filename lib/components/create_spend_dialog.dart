@@ -2,8 +2,10 @@ import 'package:currency_text_input_formatter/currency_text_input_formatter.dart
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:sofia_app/controllers/create_spend.controller.dart';
 import 'package:sofia_app/enums/spend_type.dart';
+import 'package:sofia_app/enums/transaction_category.dart';
 
 class CreateSpendDialog extends StatefulWidget {
   const CreateSpendDialog({super.key});
@@ -23,7 +25,7 @@ class _CreateSpendDialogState extends State<CreateSpendDialog> {
       ),
       child: SingleChildScrollView(
         child: Container(
-          height: 550,
+          height: 430,
           width: 500,
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Form(
@@ -35,7 +37,7 @@ class _CreateSpendDialogState extends State<CreateSpendDialog> {
                   const Padding(
                     padding: EdgeInsets.all(8.0),
                     child: Text(
-                      'Criar gasto',
+                      'Criar Transação',
                       style: TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
@@ -44,8 +46,7 @@ class _CreateSpendDialogState extends State<CreateSpendDialog> {
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: TextFormField(
-                      controller: _controller.categoryController,
+                    child: DropdownButtonFormField(
                       onChanged: (value) =>
                           _controller.onCategoryChanged(value.toString()),
                       validator: (value) => _controller.validateCategory(value),
@@ -53,6 +54,7 @@ class _CreateSpendDialogState extends State<CreateSpendDialog> {
                         border: OutlineInputBorder(),
                         labelText: 'Categoria',
                       ),
+                      items: _getCategories(),
                     ),
                   ),
                   Padding(
@@ -95,7 +97,8 @@ class _CreateSpendDialogState extends State<CreateSpendDialog> {
                       keyboardType: TextInputType.number,
                       controller: _controller.dateController,
                       onChanged: (value) =>
-                          _controller.onDateChanged(value.toString()),
+                          _controller.onDateChanged(DateFormat('dd/MM/yyyy')
+                              .parse(value.toString())),
                       validator: (value) => _controller.validateDate(value),
                       inputFormatters: [
                         FilteringTextInputFormatter.digitsOnly,
@@ -108,20 +111,6 @@ class _CreateSpendDialogState extends State<CreateSpendDialog> {
                         ),
                         border: const OutlineInputBorder(),
                         labelText: 'Data',
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: DropdownButtonFormField(
-                      value: _controller.type,
-                      items: _getTypes(),
-                      onChanged: (value) =>
-                          _controller.onTypeChanged(value.toString()),
-                      validator: (value) => _controller.validateType(value),
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        labelText: 'Tipo',
                       ),
                     ),
                   ),
@@ -156,18 +145,16 @@ class _CreateSpendDialogState extends State<CreateSpendDialog> {
     );
   }
 
-  List<DropdownMenuItem<dynamic>> _getTypes() {
-    var response = SpendType.values
+  List<DropdownMenuItem<dynamic>> _getCategories() {
+    return TransactionCategory.values
         .map(
           (e) => DropdownMenuItem(
-            value: e.name,
+            value: e.getValue(),
             child: Text(
-              e.name == 'income' ? 'Receita' : 'Despesa',
+              e.getValue(),
             ),
           ),
         )
         .toList();
-
-    return response;
   }
 }

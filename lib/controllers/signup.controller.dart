@@ -12,19 +12,23 @@ class SignupController extends GetxController {
   final _formKey = GlobalKey<FormState>();
   final _name = ''.obs;
   final _email = ''.obs;
+  final _phone = ''.obs;
   final _password = ''.obs;
 
   GlobalKey<FormState> get formKey => _formKey;
   String get name => _name.value;
   String get email => _email.value;
+  String get phone => _phone.value;
   String get password => _password.value;
 
   set name(String value) => _name(value);
   set email(String value) => _email(value);
+  set phone(String value) => _phone(value);
   set password(String value) => _password(value);
 
   TextEditingController nameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
+  TextEditingController phoneController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
   void onNameChanged(String value) {
@@ -33,6 +37,10 @@ class SignupController extends GetxController {
 
   void onEmailChanged(String value) {
     email = value;
+  }
+
+  void onPhoneChanged(String value) {
+    phone = value;
   }
 
   void onPasswordChanged(String value) {
@@ -45,6 +53,7 @@ class SignupController extends GetxController {
 
     nameController.addListener(() => name = nameController.text);
     emailController.addListener(() => email = emailController.text);
+    phoneController.addListener(() => phone = phoneController.text);
     passwordController.addListener(() => password = passwordController.text);
 
     super.onInit();
@@ -53,6 +62,7 @@ class SignupController extends GetxController {
   void clear() {
     nameController.clear();
     emailController.clear();
+    phoneController.clear();
     passwordController.clear();
   }
 
@@ -75,6 +85,17 @@ class SignupController extends GetxController {
 
     if (!GetUtils.isEmail(value)) {
       return 'Parece que esse email não é valido';
+    }
+    return null;
+  }
+
+  String? validatePhone(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Precisamos saber seu telefone para continuar';
+    }
+
+    if (!GetUtils.isPhoneNumber(value)) {
+      return 'Parece que esse telefone não é valido';
     }
     return null;
   }
@@ -105,16 +126,15 @@ class SignupController extends GetxController {
     }
 
     try {
-      await signupUC.execute(name, email, password);
-      await authUC.execute(email, password);
+      await signupUC(name, email, phone, password);
+      await authUC(email, password);
       Get.offAllNamed(Routes.home);
     } on DioException catch (error) {
-      Get.toNamed(
-        Routes.error,
-        arguments: error,
-      );
-    } finally {
-      _hideSnakBar(scaffold);
+      Get.showSnackbar(GetSnackBar(
+        title: 'Erro ao criar conta',
+        message: error.response?.data['message'] ?? 'Erro desconhecido',
+        duration: const Duration(seconds: 5),
+      ));
     }
   }
 
@@ -124,9 +144,5 @@ class SignupController extends GetxController {
         content: Text('Estamos criando sua conta, aguarde um momento...'),
       ),
     );
-  }
-
-  void _hideSnakBar(ScaffoldMessengerState scaffold) {
-    scaffold.hideCurrentSnackBar();
   }
 }
